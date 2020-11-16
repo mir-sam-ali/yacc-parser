@@ -1,7 +1,7 @@
 {
-	     int a;
+	      int a;
 		  int b;
 		  int a;
-		  char A[20];
+		  char A[20][30][2];
 }
 
