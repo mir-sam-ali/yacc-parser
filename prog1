@@ -1,0 +1,15 @@
+{
+	int a;
+	int x, y;
+	float c;
+	{
+		int a;
+		int b;
+	}
+	{
+		int a;
+		char m;
+		int sameed[20];
+	}
+}
+

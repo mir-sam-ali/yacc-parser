@@ -1,0 +1,280 @@
+Terminals which are not used
+
+   ASGN
+   LP
+   RP
+
+
+Grammar
+
+    0 $accept: decl $end
+
+    1 decl: dec SCOL
+    2     | decl dec SCOL
+
+    3 dec: TYPE LIST
+
+    4 TYPE: INT
+    5     | FLOAT
+    6     | CHAR
+
+    7 LIST: VAR
+    8     | LIST COMMA VAR
+
+    9 VAR: VARID
+   10    | VARID ARRAYDECL
+
+   11 VARID: ID
+
+   12 ARRAYDECL: ARRAYDEC
+   13          | ARRAYDECL ARRAYDEC
+
+   14 ARRAYDEC: LSB NUM RSB
+
+   15 NUM: NUMBER
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+NUMBER (258) 15
+ID (259) 11
+ASGN (260)
+LP (261)
+RP (262)
+SCOL (263) 1 2
+COMMA (264) 8
+LSB (265) 14
+RSB (266) 14
+FLOAT (267) 5
+INT (268) 4
+CHAR (269) 6
+
+
+Nonterminals, with rules where they appear
+
+$accept (15)
+    on left: 0
+decl (16)
+    on left: 1 2, on right: 0 2
+dec (17)
+    on left: 3, on right: 1 2
+TYPE (18)
+    on left: 4 5 6, on right: 3
+LIST (19)
+    on left: 7 8, on right: 3 8
+VAR (20)
+    on left: 9 10, on right: 7 8
+VARID (21)
+    on left: 11, on right: 9 10
+ARRAYDECL (22)
+    on left: 12 13, on right: 10 13
+ARRAYDEC (23)
+    on left: 14, on right: 12 13
+NUM (24)
+    on left: 15, on right: 14
+
+
+state 0
+
+    0 $accept: . decl $end
+
+    FLOAT  shift, and go to state 1
+    INT    shift, and go to state 2
+    CHAR   shift, and go to state 3
+
+    decl  go to state 4
+    dec   go to state 5
+    TYPE  go to state 6
+
+
+state 1
+
+    5 TYPE: FLOAT .
+
+    $default  reduce using rule 5 (TYPE)
+
+
+state 2
+
+    4 TYPE: INT .
+
+    $default  reduce using rule 4 (TYPE)
+
+
+state 3
+
+    6 TYPE: CHAR .
+
+    $default  reduce using rule 6 (TYPE)
+
+
+state 4
+
+    0 $accept: decl . $end
+    2 decl: decl . dec SCOL
+
+    $end   shift, and go to state 7
+    FLOAT  shift, and go to state 1
+    INT    shift, and go to state 2
+    CHAR   shift, and go to state 3
+
+    dec   go to state 8
+    TYPE  go to state 6
+
+
+state 5
+
+    1 decl: dec . SCOL
+
+    SCOL  shift, and go to state 9
+
+
+state 6
+
+    3 dec: TYPE . LIST
+
+    ID  shift, and go to state 10
+
+    LIST   go to state 11
+    VAR    go to state 12
+    VARID  go to state 13
+
+
+state 7
+
+    0 $accept: decl $end .
+
+    $default  accept
+
+
+state 8
+
+    2 decl: decl dec . SCOL
+
+    SCOL  shift, and go to state 14
+
+
+state 9
+
+    1 decl: dec SCOL .
+
+    $default  reduce using rule 1 (decl)
+
+
+state 10
+
+   11 VARID: ID .
+
+    $default  reduce using rule 11 (VARID)
+
+
+state 11
+
+    3 dec: TYPE LIST .
+    8 LIST: LIST . COMMA VAR
+
+    COMMA  shift, and go to state 15
+
+    $default  reduce using rule 3 (dec)
+
+
+state 12
+
+    7 LIST: VAR .
+
+    $default  reduce using rule 7 (LIST)
+
+
+state 13
+
+    9 VAR: VARID .
+   10    | VARID . ARRAYDECL
+
+    LSB  shift, and go to state 16
+
+    $default  reduce using rule 9 (VAR)
+
+    ARRAYDECL  go to state 17
+    ARRAYDEC   go to state 18
+
+
+state 14
+
+    2 decl: decl dec SCOL .
+
+    $default  reduce using rule 2 (decl)
+
+
+state 15
+
+    8 LIST: LIST COMMA . VAR
+
+    ID  shift, and go to state 10
+
+    VAR    go to state 19
+    VARID  go to state 13
+
+
+state 16
+
+   14 ARRAYDEC: LSB . NUM RSB
+
+    NUMBER  shift, and go to state 20
+
+    NUM  go to state 21
+
+
+state 17
+
+   10 VAR: VARID ARRAYDECL .
+   13 ARRAYDECL: ARRAYDECL . ARRAYDEC
+
+    LSB  shift, and go to state 16
+
+    $default  reduce using rule 10 (VAR)
+
+    ARRAYDEC  go to state 22
+
+
+state 18
+
+   12 ARRAYDECL: ARRAYDEC .
+
+    $default  reduce using rule 12 (ARRAYDECL)
+
+
+state 19
+
+    8 LIST: LIST COMMA VAR .
+
+    $default  reduce using rule 8 (LIST)
+
+
+state 20
+
+   15 NUM: NUMBER .
+
+    $default  reduce using rule 15 (NUM)
+
+
+state 21
+
+   14 ARRAYDEC: LSB NUM . RSB
+
+    RSB  shift, and go to state 23
+
+
+state 22
+
+   13 ARRAYDECL: ARRAYDECL ARRAYDEC .
+
+    $default  reduce using rule 13 (ARRAYDECL)
+
+
+state 23
+
+   14 ARRAYDEC: LSB NUM RSB .
+
+    $default  reduce using rule 14 (ARRAYDEC)
