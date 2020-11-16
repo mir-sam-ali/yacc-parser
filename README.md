@@ -66,7 +66,8 @@ integer --> y --> '4 Bytes' --> variable
 integer --> z --> '4 Bytes' --> variable
 integer --> a[10] --> '40 Bytes' --> array
 ```
-
+## References
+- Aho - Compilers - Principles, Techniques, and Tools.
 
 ## Execution
 
