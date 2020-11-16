@@ -110,14 +110,11 @@ int yyerror(char *);
 	 struct Snode {
 		  struct Snode *left;
 		  struct Snode *right;
-		  struct Snode *parent;
 		  int size;
 		  char tok[20];
-		  char lexval[20];
-		  
+		  char lexval[20];  
 		  char type[20];
 	 };
-void postorder(struct Snode*);
 void inorder(struct Snode*);
 
 
@@ -141,15 +138,14 @@ void inorder(struct Snode*);
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 23 "parser.y"
+#line 20 "parser.y"
 {
-	int dval;
 	 char lexeme[20];
 	 struct Snode *snode;
-	
+
 }
 /* Line 193 of yacc.c.  */
-#line 153 "y.tab.c"
+#line 149 "y.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -162,7 +158,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 166 "y.tab.c"
+#line 162 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -449,8 +445,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    51,    51,    55,    61,    70,    78,    86,    94,   105,
-     121,   128,   136,   143,   151,   158,   167
+       0,    47,    47,    51,    56,    66,    74,    82,    91,   105,
+     123,   130,   138,   145,   153,   160,   169
 };
 #endif
 
@@ -461,7 +457,7 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "NUMBER", "ID", "ASGN", "LP", "RP",
   "SCOL", "COMMA", "LSB", "RSB", "FLOAT", "INT", "CHAR", "$accept", "decl",
-  "dec", "TYPE", "LIST", "VAR", "VARID", "ARRAYDECL", "ARRAYDEC", "NUM", 0
+  "dec", "TYPE", "VARLIST", "VAR", "VARID", "ARRAYDECL", "ARRAYDEC", "NUM", 0
 };
 #endif
 
@@ -1359,36 +1355,36 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 51 "parser.y"
+#line 47 "parser.y"
     {
-	 						printf("\nDeclaration Statement Accepted.\n");
-			 				inorder((yyvsp[(1) - (2)].snode));
-		}
+	 							printf("\nDeclaration Statement Accepted.\n\n");
+			 					inorder((yyvsp[(1) - (2)].snode));
+							}
     break;
 
   case 3:
-#line 55 "parser.y"
+#line 51 "parser.y"
     {
-	 						printf("\nDeclaration Statement Accepted.\n");
-			 				inorder((yyvsp[(2) - (3)].snode));
-			 		
-		}
+	 							printf("\nDeclaration Statement Accepted.\n\n");
+			 					inorder((yyvsp[(2) - (3)].snode));
+							}
     break;
 
   case 4:
-#line 61 "parser.y"
-    {(yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
-							(yyval.snode)->left = (yyvsp[(1) - (2)].snode);
-							(yyval.snode)->right = (yyvsp[(2) - (2)].snode);
-							strcpy((yyval.snode)->type,(yyvsp[(1) - (2)].snode)->type); 
-							strcpy((yyvsp[(2) - (2)].snode)->type,(yyvsp[(1) - (2)].snode)->type);
-										strcpy((yyval.snode)->lexval,""); 
-										strcpy((yyval.snode)->tok,"dec"); 
-		}
+#line 56 "parser.y"
+    {
+								(yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
+								(yyval.snode)->left = (yyvsp[(1) - (2)].snode);
+								(yyval.snode)->right = (yyvsp[(2) - (2)].snode);
+								strcpy((yyval.snode)->type,(yyvsp[(1) - (2)].snode)->type); 
+								strcpy((yyvsp[(2) - (2)].snode)->type,(yyvsp[(1) - (2)].snode)->type);
+								strcpy((yyval.snode)->lexval,""); 
+								strcpy((yyval.snode)->tok,"dec"); 
+							}
     break;
 
   case 5:
-#line 70 "parser.y"
+#line 66 "parser.y"
     { (yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
 			 						strcpy((yyval.snode)->tok, "INT");
 			 						strcpy((yyval.snode)->lexval, "int");
@@ -1399,7 +1395,7 @@ yyreduce:
     break;
 
   case 6:
-#line 78 "parser.y"
+#line 74 "parser.y"
     { (yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
 			 						strcpy((yyval.snode)->tok, "FLOAT");
 			 						strcpy((yyval.snode)->lexval, "float");
@@ -1410,7 +1406,7 @@ yyreduce:
     break;
 
   case 7:
-#line 86 "parser.y"
+#line 82 "parser.y"
     { (yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
 			 						strcpy((yyval.snode)->tok, "CHAR");
 			 						strcpy((yyval.snode)->lexval, "char");
@@ -1421,12 +1417,15 @@ yyreduce:
     break;
 
   case 8:
-#line 94 "parser.y"
-    {(yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
+#line 91 "parser.y"
+    {
+										(yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
 										(yyval.snode)->left = (yyvsp[(1) - (1)].snode);
 										(yyval.snode)->right= NULL;
 										strcpy((yyvsp[(1) - (1)].snode)->type,(yyvsp[(0) - (1)].snode)->type);
+										// $<snode>0->type gets type value from TYPE
 										if(!strcmp((yyvsp[(1) - (1)].snode)->type, "integer") || !strcmp((yyvsp[(1) - (1)].snode)->type, "float")){
+											// Calculating number of bytes
 											(yyvsp[(1) - (1)].snode)->size=4*(yyvsp[(1) - (1)].snode)->size;
 										}
 										strcpy((yyval.snode)->lexval,""); 
@@ -1438,12 +1437,14 @@ yyreduce:
 #line 106 "parser.y"
     {(yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
 										(yyval.snode)->left = (yyvsp[(1) - (3)].snode);
-										(yyvsp[(1) - (3)].snode)->parent=(yyval.snode);
+								
 										(yyval.snode)->right= (yyvsp[(3) - (3)].snode);
-										(yyvsp[(3) - (3)].snode)->parent=(yyval.snode);
 										
+										
+										// $<snode>0->type gets type value from TYPE
 										strcpy((yyvsp[(3) - (3)].snode)->type,(yyvsp[(0) - (3)].snode)->type);
 										if(!strcmp((yyvsp[(3) - (3)].snode)->type, "integer") || !strcmp((yyvsp[(3) - (3)].snode)->type, "float")){
+											// Calculating number of bytes
 											(yyvsp[(3) - (3)].snode)->size=4*(yyvsp[(3) - (3)].snode)->size;
 										}
 										
@@ -1453,7 +1454,7 @@ yyreduce:
     break;
 
   case 10:
-#line 121 "parser.y"
+#line 123 "parser.y"
     { (yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
 			 						strcpy((yyval.snode)->tok, "variable");
 			 						strcpy((yyval.snode)->lexval, (yyvsp[(1) - (1)].snode)->lexval);
@@ -1464,18 +1465,18 @@ yyreduce:
     break;
 
   case 11:
-#line 128 "parser.y"
+#line 130 "parser.y"
     { (yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
 			 						strcpy((yyval.snode)->tok, "array");									
 			 						strcpy((yyval.snode)->lexval, strcat((yyvsp[(1) - (2)].snode)->lexval,(yyvsp[(2) - (2)].snode)->lexval));
-									(yyval.snode)->size=(yyvsp[(2) - (2)].snode)->size;
+									(yyval.snode)->size=  (yyvsp[(2) - (2)].snode)->size;
 						 			(yyval.snode)->right = (yyvsp[(2) - (2)].snode); 
 						 			(yyval.snode)->left = (yyvsp[(1) - (2)].snode); 
 								}
     break;
 
   case 12:
-#line 136 "parser.y"
+#line 138 "parser.y"
     { (yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
 			 						strcpy((yyval.snode)->tok, "ID");
 			 						strcpy((yyval.snode)->lexval, (yyvsp[(1) - (1)].lexeme));
@@ -1485,7 +1486,7 @@ yyreduce:
     break;
 
   case 13:
-#line 143 "parser.y"
+#line 145 "parser.y"
     { (yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
 			 						strcpy((yyval.snode)->tok, "");
 								
@@ -1497,7 +1498,7 @@ yyreduce:
     break;
 
   case 14:
-#line 151 "parser.y"
+#line 153 "parser.y"
     { (yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
 			 						strcpy((yyval.snode)->tok, "");									
 			 						strcpy((yyval.snode)->lexval, strcat((yyvsp[(1) - (2)].snode)->lexval,(yyvsp[(2) - (2)].snode)->lexval));
@@ -1508,7 +1509,7 @@ yyreduce:
     break;
 
   case 15:
-#line 158 "parser.y"
+#line 160 "parser.y"
     { (yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
 			 						strcpy((yyval.snode)->tok, "");									
 									char dest[20]="[";
@@ -1521,7 +1522,7 @@ yyreduce:
     break;
 
   case 16:
-#line 167 "parser.y"
+#line 169 "parser.y"
     { (yyval.snode) = (struct Snode *) malloc(sizeof(struct Snode)); 
 			 						strcpy((yyval.snode)->tok, "NUMBER");
 			 						strcpy((yyval.snode)->lexval, (yyvsp[(1) - (1)].lexeme));
@@ -1533,7 +1534,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 1537 "y.tab.c"
+#line 1538 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1747,7 +1748,7 @@ yyreturn:
 }
 
 
-#line 174 "parser.y"
+#line 176 "parser.y"
 
 
 int main(int argc, char *argv[])
@@ -1757,8 +1758,10 @@ int main(int argc, char *argv[])
        exit(0);
    }
    yyin = fopen(argv[1], "r");
-  yyparse();
-  return 0;
+   printf("\nOutput Format: \n");
+   printf("<type> --> <variable_name> --> <size> --> <array/variable>\n");
+   yyparse();
+   return 0;
 }
 
 
@@ -1771,12 +1774,16 @@ void inorder(struct Snode *ptr) {
 	if (ptr == NULL)
 		 return;
 
-   inorder(ptr->left);
-	if (!strcmp(ptr->tok, "variable"))
-		printf("%s\t%s\t%d\t%s\n",ptr->type,ptr->lexval,ptr->size,ptr->tok);
-	if (!strcmp(ptr->tok, "array"))
-		printf("%s\t%s\t%d\t%s\n",ptr->type,ptr->lexval,ptr->size,ptr->tok);
+    inorder(ptr->left);
+	if (!strcmp(ptr->tok, "variable") || !strcmp(ptr->tok, "array")){
 
+		if(ptr->size < 2)
+			printf("%s --> %s --> '%d Byte' --> %s\n\n",ptr->type,ptr->lexval,ptr->size,ptr->tok);
+		else
+			printf("%s --> %s --> '%d Bytes' --> %s\n\n",ptr->type,ptr->lexval,ptr->size,ptr->tok);
+		
+		}
+	
 	inorder(ptr->right);
 }
 

@@ -12,14 +12,14 @@ Grammar
     1 decl: dec SCOL
     2     | decl dec SCOL
 
-    3 dec: TYPE LIST
+    3 dec: TYPE VARLIST
 
     4 TYPE: INT
     5     | FLOAT
     6     | CHAR
 
-    7 LIST: VAR
-    8     | LIST COMMA VAR
+    7 VARLIST: VAR
+    8        | VARLIST COMMA VAR
 
     9 VAR: VARID
    10    | VARID ARRAYDECL
@@ -62,7 +62,7 @@ dec (17)
     on left: 3, on right: 1 2
 TYPE (18)
     on left: 4 5 6, on right: 3
-LIST (19)
+VARLIST (19)
     on left: 7 8, on right: 3 8
 VAR (20)
     on left: 9 10, on right: 7 8
@@ -133,13 +133,13 @@ state 5
 
 state 6
 
-    3 dec: TYPE . LIST
+    3 dec: TYPE . VARLIST
 
     ID  shift, and go to state 10
 
-    LIST   go to state 11
-    VAR    go to state 12
-    VARID  go to state 13
+    VARLIST  go to state 11
+    VAR      go to state 12
+    VARID    go to state 13
 
 
 state 7
@@ -172,8 +172,8 @@ state 10
 
 state 11
 
-    3 dec: TYPE LIST .
-    8 LIST: LIST . COMMA VAR
+    3 dec: TYPE VARLIST .
+    8 VARLIST: VARLIST . COMMA VAR
 
     COMMA  shift, and go to state 15
 
@@ -182,9 +182,9 @@ state 11
 
 state 12
 
-    7 LIST: VAR .
+    7 VARLIST: VAR .
 
-    $default  reduce using rule 7 (LIST)
+    $default  reduce using rule 7 (VARLIST)
 
 
 state 13
@@ -209,7 +209,7 @@ state 14
 
 state 15
 
-    8 LIST: LIST COMMA . VAR
+    8 VARLIST: VARLIST COMMA . VAR
 
     ID  shift, and go to state 10
 
@@ -247,9 +247,9 @@ state 18
 
 state 19
 
-    8 LIST: LIST COMMA VAR .
+    8 VARLIST: VARLIST COMMA VAR .
 
-    $default  reduce using rule 8 (LIST)
+    $default  reduce using rule 8 (VARLIST)
 
 
 state 20

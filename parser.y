@@ -9,22 +9,18 @@ int yyerror(char *);
 	 struct Snode {
 		  struct Snode *left;
 		  struct Snode *right;
-		  struct Snode *parent;
 		  int size;
 		  char tok[20];
-		  char lexval[20];
-		  
+		  char lexval[20];  
 		  char type[20];
 	 };
-void postorder(struct Snode*);
 void inorder(struct Snode*);
 %}
 
 %union {
-	int dval;
 	 char lexeme[20];
 	 struct Snode *snode;
-	
+
 }
 		  
 
@@ -38,7 +34,7 @@ void inorder(struct Snode*);
 %type <snode> TYPE;
 
 %type <snode> NUM
-%type <snode> LIST
+%type <snode> VARLIST
 %type <snode> VAR
 %type <snode> VARID
 %type <snode> dec
@@ -48,26 +44,26 @@ void inorder(struct Snode*);
 
 %%
 
-decl : dec SCOL 		{
-	 						printf("\nDeclaration Statement Accepted.\n");
-			 				inorder($1);
-		};
-decl : decl dec SCOL {
-	 						printf("\nDeclaration Statement Accepted.\n");
-			 				inorder($2);
-			 		
-		};
+decl : dec SCOL 			{
+	 							printf("\nDeclaration Statement Accepted.\n\n");
+			 					inorder($1);
+							};
+decl : decl dec SCOL 		{
+	 							printf("\nDeclaration Statement Accepted.\n\n");
+			 					inorder($2);
+							};
 
-dec	: 	TYPE LIST {$$ = (struct Snode *) malloc(sizeof(struct Snode)); 
-							$$->left = $1;
-							$$->right = $2;
-							strcpy($$->type,$1->type); 
-							strcpy($2->type,$1->type);
-										strcpy($$->lexval,""); 
-										strcpy($$->tok,"dec"); 
-		};
+dec	: 	TYPE VARLIST 			{
+								$$ = (struct Snode *) malloc(sizeof(struct Snode)); 
+								$$->left = $1;
+								$$->right = $2;
+								strcpy($$->type,$1->type); 
+								strcpy($2->type,$1->type);
+								strcpy($$->lexval,""); 
+								strcpy($$->tok,"dec"); 
+							};
 
-TYPE : INT { $$ = (struct Snode *) malloc(sizeof(struct Snode)); 
+TYPE : INT 					{ $$ = (struct Snode *) malloc(sizeof(struct Snode)); 
 			 						strcpy($$->tok, "INT");
 			 						strcpy($$->lexval, "int");
 									strcpy($$->type, "integer");
@@ -75,7 +71,7 @@ TYPE : INT { $$ = (struct Snode *) malloc(sizeof(struct Snode));
 						 			$$->left = NULL; 
 								} ;
 
-TYPE : FLOAT { $$ = (struct Snode *) malloc(sizeof(struct Snode)); 
+TYPE : FLOAT 				{ $$ = (struct Snode *) malloc(sizeof(struct Snode)); 
 			 						strcpy($$->tok, "FLOAT");
 			 						strcpy($$->lexval, "float");
 									strcpy($$->type, "float");
@@ -83,7 +79,7 @@ TYPE : FLOAT { $$ = (struct Snode *) malloc(sizeof(struct Snode));
 						 			$$->left = NULL; 
 								} ;
 
-TYPE : CHAR { $$ = (struct Snode *) malloc(sizeof(struct Snode)); 
+TYPE : CHAR 				{ $$ = (struct Snode *) malloc(sizeof(struct Snode)); 
 			 						strcpy($$->tok, "CHAR");
 			 						strcpy($$->lexval, "char");
 									strcpy($$->type, "character");
@@ -91,26 +87,32 @@ TYPE : CHAR { $$ = (struct Snode *) malloc(sizeof(struct Snode));
 						 			$$->left = NULL; 
 								} ;
 
-LIST:   VAR		{$$ = (struct Snode *) malloc(sizeof(struct Snode)); 
+
+VARLIST:   VAR						{
+										$$ = (struct Snode *) malloc(sizeof(struct Snode)); 
 										$$->left = $1;
 										$$->right= NULL;
 										strcpy($1->type,$<snode>0->type);
+										// $<snode>0->type gets type value from TYPE
 										if(!strcmp($1->type, "integer") || !strcmp($1->type, "float")){
+											// Calculating number of bytes
 											$1->size=4*$1->size;
 										}
 										strcpy($$->lexval,""); 
 										strcpy($$->tok,"LIST"); 
 									} 
 										;
-LIST:	LIST COMMA VAR 
-{$$ = (struct Snode *) malloc(sizeof(struct Snode)); 
+VARLIST:	VARLIST COMMA VAR 
+									{$$ = (struct Snode *) malloc(sizeof(struct Snode)); 
 										$$->left = $1;
-										$1->parent=$$;
+								
 										$$->right= $3;
-										$3->parent=$$;
 										
+										
+										// $<snode>0->type gets type value from TYPE
 										strcpy($3->type,$<snode>0->type);
 										if(!strcmp($3->type, "integer") || !strcmp($3->type, "float")){
+											// Calculating number of bytes
 											$3->size=4*$3->size;
 										}
 										
@@ -128,7 +130,7 @@ VAR	:	VARID	{ $$ = (struct Snode *) malloc(sizeof(struct Snode));
 VAR	:	VARID ARRAYDECL	{ $$ = (struct Snode *) malloc(sizeof(struct Snode)); 
 			 						strcpy($$->tok, "array");									
 			 						strcpy($$->lexval, strcat($1->lexval,$2->lexval));
-									$$->size=$2->size;
+									$$->size=  $2->size;
 						 			$$->right = $2; 
 						 			$$->left = $1; 
 								} ;
@@ -180,8 +182,10 @@ int main(int argc, char *argv[])
        exit(0);
    }
    yyin = fopen(argv[1], "r");
-  yyparse();
-  return 0;
+   printf("\nOutput Format: \n");
+   printf("<type> --> <variable_name> --> <size> --> <array/variable>\n");
+   yyparse();
+   return 0;
 }
 
 
@@ -194,12 +198,16 @@ void inorder(struct Snode *ptr) {
 	if (ptr == NULL)
 		 return;
 
-   inorder(ptr->left);
-	if (!strcmp(ptr->tok, "variable"))
-		printf("%s\t%s\t%d\t%s\n",ptr->type,ptr->lexval,ptr->size,ptr->tok);
-	if (!strcmp(ptr->tok, "array"))
-		printf("%s\t%s\t%d\t%s\n",ptr->type,ptr->lexval,ptr->size,ptr->tok);
+    inorder(ptr->left);
+	if (!strcmp(ptr->tok, "variable") || !strcmp(ptr->tok, "array")){
 
+		if(ptr->size < 2)
+			printf("%s --> %s --> '%d Byte' --> %s\n\n",ptr->type,ptr->lexval,ptr->size,ptr->tok);
+		else
+			printf("%s --> %s --> '%d Bytes' --> %s\n\n",ptr->type,ptr->lexval,ptr->size,ptr->tok);
+		
+		}
+	
 	inorder(ptr->right);
 }
 
